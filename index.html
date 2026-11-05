@@ -237,7 +237,7 @@ img{max-width:100%}
 
 <script>
 /* Configuración de la nube (Supabase). Vacío = modo demo, los datos se guardan solo en este navegador. */
-window.MOITY_CONFIG = window.MOITY_CONFIG || { supabaseUrl: '', supabaseKey: '' };
+window.MOITY_CONFIG = window.MOITY_CONFIG || { supabaseUrl: 'https://xugalxkupzmcbbiwcylc.supabase.co', supabaseKey: 'sb_publishable_Lgt8PyBt6FI4dhaR_lJ8jA_a-YNbGtu' };
 </script>
 <script>
 (function(){
@@ -274,7 +274,7 @@ const toRow = p => ({ id:p.id, brand:p.brand, name:p.name, type:p.type, p5:p.p5,
 const Store = {
   async init(){
     if (!CLOUD) return;
-    await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js');
+    await loadScript('js/supabase.js');
     sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey);
   },
   async list(){
