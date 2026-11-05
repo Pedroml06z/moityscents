@@ -230,7 +230,31 @@ img{max-width:100%}
 .login h1{margin:0;font-family:var(--serif);font-weight:300;font-size:40px}
 .demo{margin-top:14px;padding:10px 12px;border:1px solid #4a3f26;background:#211d14;color:#d9c79c;font-size:13px;line-height:1.5}
 .busy{opacity:.5;pointer-events:none}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+/* Animaciones */
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{transform:translateY(100%)}to{transform:none}}
+@keyframes pop{0%{transform:scale(.4)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes shine{from{background-position:120% 0}to{background-position:-20% 0}}
+.hero-in>*{animation:up .9s cubic-bezier(.2,.7,.2,1) both}
+.hero-in>*:nth-child(2){animation-delay:.12s}.hero-in>*:nth-child(3){animation-delay:.24s}.hero-in>*:nth-child(4){animation-delay:.36s}
+.hero h1 em{background:linear-gradient(100deg,var(--gold) 40%,#f3e2b5 50%,var(--gold) 60%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 2.4s .9s ease-out both}
+.step{animation:up .8s .5s both}.step:nth-child(2){animation-delay:.6s}.step:nth-child(3){animation-delay:.7s}
+.card{transition:border-color .3s,opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.card:hover{border-color:#4d4433}
+.card .ph>img{transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.card:hover .ph>img{transform:scale(1.2)}
+.card.rv{opacity:0;transform:translateY(22px)}
+.card.rv.in{opacity:1;transform:none}
+.size{transition:border-color .2s,background .2s}
+.size:active:not(:disabled){background:rgba(201,169,97,.12)}
+.badge.pop{animation:pop .35s ease-out}
+.bagbar{animation:up .35s ease-out}
+.overlay{animation:fade .25s ease-out}
+.overlay .sheet{animation:rise .35s cubic-bezier(.2,.7,.2,1)}
+.overlay.center .dialog{animation:up .3s ease-out}
+.btn,.chip,.dm{transition:background .2s,border-color .2s,color .2s}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.card.rv{opacity:1;transform:none}.hero h1 em{color:var(--gold);background:none}}
 </style>
 
 <div id="app"></div>
@@ -336,6 +360,14 @@ window.addEventListener('storage', e => { if (e.key === KEY && !CLOUD){ Store.li
 
 /* ================= MENÚ PÚBLICO ================= */
 const M = { filter:'todos', q:'', bag:{}, sheet:false, copied:false };
+const seen = new Set(); let lastAdd = '';
+const io = true;
+function reveal(){
+  document.querySelectorAll('.card.rv:not(.in)').forEach(c => {
+    if (c.getBoundingClientRect().top < window.innerHeight - 30){ c.classList.add('in'); seen.add(c.dataset.cid); }
+  });
+}
+window.addEventListener('scroll', reveal, { passive:true }); window.addEventListener('resize', reveal);
 
 function menuShell(){
   $('#app').innerHTML = `
@@ -397,7 +429,8 @@ function menuRender(){
   const card = p => {
     const b5 = M.bag[p.id+'|5']||0, b10 = M.bag[p.id+'|10']||0;
     const ini = p.brand.split(/\s+/).map(w => w[0]||'').join('').slice(0,2).toUpperCase();
-    return `<article class="card">
+    const rv = io && !seen.has(p.id) ? ' rv' : '';
+    return `<article class="card${rv}" data-cid="${esc(p.id)}">
       <div class="ph">
         ${p.img ? `<img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy">` : `<div class="noimg"><span class="ini">${esc(ini)}</span><span class="bar"></span><span class="soon">Foto próximamente</span></div>`}
         <span class="tag">${typeLabel(p.type)}</span>
@@ -408,8 +441,8 @@ function menuRender(){
         <h3>${esc(p.name)}</h3>
         <div class="sp"></div>
         <div class="sizes">
-          <button class="size" data-add="${esc(p.id)}|5" ${p.soldOut?'disabled':''}><small>5 ml</small><strong>${fmt(p.p5)}</strong>${b5?`<span class="badge">${b5}</span>`:''}</button>
-          <button class="size" data-add="${esc(p.id)}|10" ${p.soldOut?'disabled':''}><small>10 ml</small><strong>${fmt(p.p10)}</strong>${b10?`<span class="badge">${b10}</span>`:''}</button>
+          <button class="size" data-add="${esc(p.id)}|5" ${p.soldOut?'disabled':''}><small>5 ml</small><strong>${fmt(p.p5)}</strong>${b5?`<span class="badge${lastAdd===p.id+'|5'?' pop':''}">${b5}</span>`:''}</button>
+          <button class="size" data-add="${esc(p.id)}|10" ${p.soldOut?'disabled':''}><small>10 ml</small><strong>${fmt(p.p10)}</strong>${b10?`<span class="badge${lastAdd===p.id+'|10'?' pop':''}">${b10}</span>`:''}</button>
         </div>
       </div>
     </article>`;
@@ -421,7 +454,8 @@ function menuRender(){
   };
   const html = sec('disenador','Diseñador') + sec('arabe','Árabes');
   $('#secs').innerHTML = html || `<div class="empty"><b>No está en el menú… todavía</b><span>Mándanos el nombre por DM y te cotizamos el decant o el frasco completo.</span><a class="btn btn-gold" href="${IG}" target="_blank" rel="noopener" style="margin-top:8px">Preguntar por DM</a></div>`;
-  $('#secs').querySelectorAll('[data-add]').forEach(b => b.onclick = () => bump(b.dataset.add, 1));
+  $('#secs').querySelectorAll('[data-add]').forEach(b => b.onclick = () => { lastAdd = b.dataset.add; bump(b.dataset.add, 1); lastAdd = ''; });
+  requestAnimationFrame(() => requestAnimationFrame(reveal));
   bagRender();
 }
 
