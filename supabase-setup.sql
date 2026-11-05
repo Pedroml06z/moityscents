@@ -12,6 +12,8 @@ create table if not exists perfumes (
   sort integer default 0
 );
 alter table perfumes enable row level security;
+grant select on perfumes to anon, authenticated;
+grant insert, update, delete on perfumes to authenticated;
 create policy "todos pueden ver el menu" on perfumes for select using (true);
 create policy "solo el dueno edita" on perfumes for all to authenticated using (true) with check (true);
 
