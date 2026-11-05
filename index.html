@@ -379,7 +379,7 @@ function menuShell(){
       <div class="logo-lg"><img src="img/p09.jpeg" alt="Moity Scents"></div>
       <h1>Decants de perfumes <em>originales</em></h1>
       <p>Muestras de 5 ml y 10 ml de perfumes de diseñador y árabes. Envíos a todo México.</p>
-      <div class="ctas"><button class="btn btn-gold" data-go="menu">Ver el menú</button><button class="btn btn-line" data-go="quote">Frascos completos</button></div>
+      <div class="ctas"><button class="btn btn-gold" data-go="menu">Ver el menú</button><button class="btn btn-line" data-go="quote">Perfumes completos</button></div>
     </div>
   </section>
   <section class="steps"><div class="wrap">
@@ -396,10 +396,10 @@ function menuShell(){
     <p class="hint">Toca un precio para agregarlo a tu pedido.</p>
   </main>
   <section class="wrap quote" id="quote"><div class="quote-box">
-    <div class="quote-img"><img src="img/p10.jpeg" alt="Frascos completos"></div>
+    <div class="quote-img"><img src="img/p10.jpeg" alt="Perfumes completos"></div>
     <div class="quote-txt">
-      <span class="eyebrow" style="font-size:11px;letter-spacing:.24em">Frascos completos</span>
-      <h2>¿Te enamoraste del decant? Cotiza el <em>frasco completo</em></h2>
+      <span class="eyebrow" style="font-size:11px;letter-spacing:.24em">Perfumes completos</span>
+      <h2>¿Te enamoraste del decant? Cotiza el <em>perfume completo</em></h2>
       <p>Cotizamos perfumes completos originales, de diseñador y árabes, aunque no estén en este menú. Envíanos el nombre del perfume y te pasamos precio y tiempo de entrega.</p>
       <a class="btn btn-outline-gold" href="${IG}" target="_blank" rel="noopener">Cotizar por DM</a>
     </div>
@@ -453,7 +453,7 @@ function menuRender(){
     return list.length ? `<section class="sec"><div class="sec-h"><h2>${title}</h2><span class="rule"></span><span class="ct">${list.length} ${list.length===1?'perfume':'perfumes'}</span></div><div class="grid">${list.map(card).join('')}</div></section>` : '';
   };
   const html = sec('disenador','Diseñador') + sec('arabe','Árabes');
-  $('#secs').innerHTML = html || `<div class="empty"><b>No está en el menú… todavía</b><span>Mándanos el nombre por DM y te cotizamos el decant o el frasco completo.</span><a class="btn btn-gold" href="${IG}" target="_blank" rel="noopener" style="margin-top:8px">Preguntar por DM</a></div>`;
+  $('#secs').innerHTML = html || `<div class="empty"><b>No está en el menú… todavía</b><span>Mándanos el nombre por DM y te cotizamos el decant o el perfume completo.</span><a class="btn btn-gold" href="${IG}" target="_blank" rel="noopener" style="margin-top:8px">Preguntar por DM</a></div>`;
   $('#secs').querySelectorAll('[data-add]').forEach(b => b.onclick = () => { lastAdd = b.dataset.add; bump(b.dataset.add, 1); lastAdd = ''; });
   requestAnimationFrame(() => requestAnimationFrame(reveal));
   bagRender();
